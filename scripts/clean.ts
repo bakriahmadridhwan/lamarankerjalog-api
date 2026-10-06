@@ -5,12 +5,12 @@ async function main() {
     throw new Error("Refusing to clean database in production");
   }
 
-  // const result = await prisma.user.deleteMany();
-  const result = await prisma.user.deleteMany({
-    where: {
-      username: "bakwan",
-    },
-  });
+  const result = await prisma.user.deleteMany();
+  // const result = await prisma.user.deleteMany({
+  //   where: {
+  //     username: "bakwan",
+  //   },
+  // });
   console.log(`Deleted ${result.count} user(s)`);
 }
 

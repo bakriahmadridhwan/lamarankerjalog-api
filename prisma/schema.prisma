@@ -12,11 +12,38 @@ datasource db {
   provider = "mysql"
 }
 
+enum ApplicationStatus {
+  applied
+  screening
+  interview
+  offer
+  accepted
+  rejected
+  withdrawn
+}
+
 model User {
-  username String    @id @db.VarChar(100)
-  password String    @db.VarChar(100)
-  name     String    @db.VarChar(100)
-  token    String?   @db.VarChar(100)
+  username     String        @id @db.VarChar(100)
+  password     String        @db.VarChar(100)
+  name         String        @db.VarChar(100)
+  token        String?       @unique @db.VarChar(100)
+  applications Application[]
 
   @@map("users")
+}
+
+model Application {
+  id              Int               @id @default(autoincrement())
+  company         String            @db.VarChar(100)
+  jobTitle        String            @map("job_title") @db.VarChar(100)
+  location        String?           @db.VarChar(100)
+  link            String?           @db.VarChar(500)
+  applicationDate DateTime          @map("application_date") @db.Date
+  status          ApplicationStatus @default(applied)
+  notes           String?           @db.Text
+  username        String            @db.VarChar(100)
+
+  user User @relation(fields: [username], references: [username])
+
+  @@map("applications")
 }

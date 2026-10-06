@@ -6,11 +6,38 @@ async function main() {
       username: "bakwan",
       password: "rahasia",
       name: "Bakri Ahmad",
+      applications: {
+        create: [
+          {
+            company: "Apple",
+            jobTitle: "Developer",
+            location: "Tangerang",
+            link: "https://developeracademy.apps.binus.ac.id/",
+            applicationDate: new Date("2026-10-01"),
+            status: "interview",
+            notes: "Dihubungi HRD lewat WhatsApp",
+          },
+          {
+            company: "Telkom",
+            jobTitle: "Developer",
+            location: "Remote",
+            applicationDate: new Date("2026-10-02"),
+            // status default "applied"; link dan notes opsional, tersimpan null
+          },
+        ],
+      },
+    },
+    include: {
+      applications: true,
     },
   });
-  console.log("Created user:", user);
+  console.log("Created user:", JSON.stringify(user, null, 2));
 
-  const allUsers = await prisma.user.findMany();
+  const allUsers = await prisma.user.findMany({
+    include: {
+      applications: true,
+    },
+  });
   console.log("All users:", JSON.stringify(allUsers, null, 2));
 }
 

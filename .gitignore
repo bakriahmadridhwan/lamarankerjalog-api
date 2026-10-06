@@ -1,3 +1,22 @@
+# Dependencies
 node_modules
+
+# Build output
 dist
+
+# Generated code
+/src/generated
+
+# Environment variables (secrets)
 .env
+.env.*
+!.env.example
+
+# Test output
+coverage
+
+# AI tooling (local)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json

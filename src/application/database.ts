@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config({ quiet: true });
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "../generated/prisma/client";
+import { logger } from "./logging";
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
@@ -15,6 +16,9 @@ const adapter = new PrismaMariaDb({
 const prisma = new PrismaClient({
   adapter,
   log: [
+    ...(process.env.NODE_ENV !== "production"
+      ? [{ emit: "event" as const, level: "query" as const }]
+      : []),
     {
       emit: "event",
       level: "query",
@@ -34,8 +38,20 @@ const prisma = new PrismaClient({
   ],
 });
 
-export { prisma };
-
 prisma.$on("query", (e) => {
-  console.info(e);
+  logger.info("query", e);
 });
+
+prisma.$on("error", (e) => {
+  logger.error("error", e);
+});
+
+prisma.$on("info", (e) => {
+  logger.info("info", e);
+});
+
+prisma.$on("warn", (e) => {
+  logger.warn("warn", e);
+});
+
+export { prisma };

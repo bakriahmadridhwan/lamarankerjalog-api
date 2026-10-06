@@ -21,10 +21,6 @@ const prisma = new PrismaClient({
       : []),
     {
       emit: "event",
-      level: "query",
-    },
-    {
-      emit: "event",
       level: "error",
     },
     {
@@ -38,12 +34,14 @@ const prisma = new PrismaClient({
   ],
 });
 
-prisma.$on("query", (e) => {
-  logger.info("query", e);
-});
+if (process.env.NODE_ENV !== "production") {
+  prisma.$on("query", (e) => {
+    logger.debug("query", e);
+  });
+}
 
 prisma.$on("error", (e) => {
-  logger.error("error", e);
+  logger.error("error", e.message, { target: e.target });
 });
 
 prisma.$on("info", (e) => {

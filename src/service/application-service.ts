@@ -94,4 +94,17 @@ export class ApplicationService {
 
     return toApplicationResponse(application);
   }
+
+  static async remove(user: User, id: number): Promise<ApplicationResponse> {
+    await this.checkApplicationMustExists(user.username, id);
+
+    const application = await prisma.application.delete({
+      where: {
+        id: id,
+        username: user.username,
+      },
+    });
+
+    return toApplicationResponse(application);
+  }
 }

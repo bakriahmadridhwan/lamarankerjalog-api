@@ -50,4 +50,20 @@ export class ApplicationController {
       next(e);
     }
   }
+
+  static async remove(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const applicationId = Number(req.params.applicationId);
+      const response = await ApplicationService.remove(
+        req.user!,
+        applicationId,
+      );
+      logger.debug("response : " + JSON.stringify(response));
+      res.status(200).json({
+        data: "OK",
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 }

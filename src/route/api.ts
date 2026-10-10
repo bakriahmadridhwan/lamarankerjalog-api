@@ -18,3 +18,7 @@ apiRouter.patch(
   "/api/applications/:applicationId",
   ApplicationController.update,
 );
+apiRouter.delete(
+  "/api/applications/:applicationId",
+  ApplicationController.remove,
+);

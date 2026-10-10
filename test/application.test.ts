@@ -238,3 +238,37 @@ describe("PATCH /api/applications/:applicationId", () => {
     expect(response.status).toBe(400);
   });
 });
+
+describe("DELETE /api/applications/:applicationId", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+    await ApplicationTest.create();
+  });
+
+  afterEach(async () => {
+    await ApplicationTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it("should be able to remove application", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .delete(`/api/applications/${application.id}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data).toBe("OK");
+  });
+
+  it("should reject remove application if application is not found", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .delete(`/api/applications/${application.id + 1}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+});

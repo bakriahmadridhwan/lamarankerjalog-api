@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { ZodError } from "zod";
 import { ResponseError } from "../error/response-error";
+import { logger } from "../application/logging";
 
 export const errorMiddleware = async (
   error: Error,
@@ -17,6 +18,11 @@ export const errorMiddleware = async (
       errors: error.message,
     });
   } else {
+    logger.error("unhandled error", {
+      message: error.message,
+      stack: error.stack,
+    });
+
     res.status(500).json({
       errors: error.message,
     });

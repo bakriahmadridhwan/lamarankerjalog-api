@@ -6,6 +6,7 @@ import {
   toApplicationResponse,
   type ApplicationResponse,
   type CreateApplicationRequest,
+  type UpdateApplicationRequest,
 } from "../model/application-model";
 import { ApplicationValidation } from "../validation/application-validation";
 import { Validation } from "../validation/validation";
@@ -63,6 +64,34 @@ export class ApplicationService {
       user.username,
       id,
     );
+    return toApplicationResponse(application);
+  }
+
+  static async update(
+    user: User,
+    request: UpdateApplicationRequest,
+  ): Promise<ApplicationResponse> {
+    const updateRequest = Validation.validate(
+      ApplicationValidation.UPDATE,
+      request,
+    );
+    await this.checkApplicationMustExists(user.username, updateRequest.id);
+
+    const { id, application_date, ...data } = updateRequest;
+
+    const application = await prisma.application.update({
+      where: {
+        id: id,
+        username: user.username,
+      },
+      data: {
+        ...data,
+        application_date: application_date
+          ? new Date(application_date)
+          : undefined,
+      },
+    });
+
     return toApplicationResponse(application);
   }
 }

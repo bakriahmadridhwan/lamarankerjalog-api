@@ -155,3 +155,86 @@ describe("GET /api/applications/:applicationId", () => {
     expect(response.body.errors).toBeDefined();
   });
 });
+
+describe("PATCH /api/applications/:applicationId", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+    await ApplicationTest.create();
+  });
+
+  afterEach(async () => {
+    await ApplicationTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it("should be able to update application", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .patch(`/api/applications/${application.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        company: "perusahaan",
+        job_title: "dev",
+        location: "lokasi",
+        link: "https://example.com",
+        application_date: "2026-10-10",
+        status: "interview",
+        notes: "init",
+      });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.id).toBe(application.id);
+    expect(response.body.data.company).toBe("perusahaan");
+    expect(response.body.data.job_title).toBe("dev");
+    expect(response.body.data.location).toBe("lokasi");
+    expect(response.body.data.link).toBe("https://example.com");
+    expect(response.body.data.application_date).toBe("2026-10-10");
+    expect(response.body.data.status).toBe("interview");
+    expect(response.body.data.notes).toBe("init");
+  });
+
+  it("should reject update application if request is invalid", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .patch(`/api/applications/${application.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        company: "",
+        job_title: "",
+        location: "lokasi",
+        link: "example",
+        application_date: "bukan-tanggal",
+        status: "",
+        notes: "",
+      });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it("should only change the fields that are sent", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .patch(`/api/applications/${application.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({ status: "interview" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.status).toBe("interview");
+    expect(response.body.data.company).toBe(application.company);
+    expect(response.body.data.notes).toBe(application.notes);
+  });
+
+  it("should reject update application if body is empty", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .patch(`/api/applications/${application.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({});
+
+    logger.debug(response.body);
+    expect(response.status).toBe(400);
+  });
+});

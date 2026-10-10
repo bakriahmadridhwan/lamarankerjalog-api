@@ -24,6 +24,17 @@ export type CreateApplicationRequest = {
   notes?: string;
 };
 
+export type UpdateApplicationRequest = {
+  id: number;
+  company?: string;
+  job_title?: string;
+  location?: string | null;
+  link?: string | null;
+  application_date?: string;
+  status?: ApplicationStatus;
+  notes?: string | null;
+};
+
 export function toApplicationResponse(
   application: Application,
 ): ApplicationResponse {

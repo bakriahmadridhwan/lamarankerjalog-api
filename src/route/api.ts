@@ -13,3 +13,4 @@ apiRouter.delete("/api/users/current", UserController.logout);
 
 // Application API
 apiRouter.post("/api/applications", ApplicationController.create);
+apiRouter.get("/api/applications/:applicationId", ApplicationController.get);

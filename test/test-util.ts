@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { prisma } from "../src/application/database";
-import type { User } from "../src/generated/prisma/client";
+import type { Application, User } from "../src/generated/prisma/client";
 
 export class UserTest {
   static async delete() {
@@ -44,5 +44,34 @@ export class ApplicationTest {
         username: "test",
       },
     });
+  }
+
+  static async create() {
+    await prisma.application.create({
+      data: {
+        company: "perusahaan",
+        job_title: "dev",
+        location: "lokasi",
+        link: "https://example.com",
+        application_date: new Date("2026-10-10"),
+        status: "applied",
+        notes: "init",
+        username: "test",
+      },
+    });
+  }
+
+  static async get(): Promise<Application> {
+    const application = await prisma.application.findFirst({
+      where: {
+        username: "test",
+      },
+    });
+
+    if (!application) {
+      throw new Error("Application is not found");
+    }
+
+    return application;
   }
 }

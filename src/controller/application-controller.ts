@@ -18,4 +18,17 @@ export class ApplicationController {
       next(e);
     }
   }
+
+  static async get(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const applicationId = Number(req.params.applicationId);
+      const response = await ApplicationService.get(req.user!, applicationId);
+      logger.debug("response : " + JSON.stringify(response));
+      res.status(200).json({
+        data: response,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 }

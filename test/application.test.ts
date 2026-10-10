@@ -112,3 +112,46 @@ describe("POST /api/applications", () => {
     expect(response.body.data.notes).toBeNull();
   });
 });
+
+describe("GET /api/applications/:applicationId", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+    await ApplicationTest.create();
+  });
+
+  afterEach(async () => {
+    await ApplicationTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it("should be able get application", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .get(`/api/applications/${application.id}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.id).toBeDefined();
+    expect(response.body.data.company).toBe(application.company);
+    expect(response.body.data.job_title).toBe(application.job_title);
+    expect(response.body.data.location).toBe(application.location);
+    expect(response.body.data.link).toBe(application.link);
+    expect(response.body.data.application_date).toBe(
+      application.application_date.toISOString().slice(0, 10),
+    );
+    expect(response.body.data.status).toBe(application.status);
+    expect(response.body.data.notes).toBe(application.notes);
+  });
+
+  it("should reject get application if application is not found", async () => {
+    const application = await ApplicationTest.get();
+    const response = await supertest(web)
+      .get(`/api/applications/${application.id + 1}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+});

@@ -1,0 +1,21 @@
+import type { Response, NextFunction } from "express";
+import type { CreateApplicationRequest } from "../model/application-model";
+import { ApplicationService } from "../service/application-service";
+import type { UserRequest } from "../type/user-request";
+import { logger } from "../application/logging";
+
+export class ApplicationController {
+  static async create(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const request: CreateApplicationRequest =
+        req.body as CreateApplicationRequest;
+      const response = await ApplicationService.create(req.user!, request);
+      logger.debug("response : " + JSON.stringify(response));
+      res.status(201).json({
+        data: response,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+}

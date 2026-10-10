@@ -33,15 +33,15 @@ model User {
 }
 
 model Application {
-  id              Int               @id @default(autoincrement())
-  company         String            @db.VarChar(100)
-  jobTitle        String            @map("job_title") @db.VarChar(100)
-  location        String?           @db.VarChar(100)
-  link            String?           @db.VarChar(500)
-  applicationDate DateTime          @map("application_date") @db.Date
-  status          ApplicationStatus @default(applied)
-  notes           String?           @db.Text
-  username        String            @db.VarChar(100)
+  id                Int               @id @default(autoincrement())
+  company           String            @db.VarChar(100)
+  job_title         String            @db.VarChar(100)
+  location          String?           @db.VarChar(100)
+  link              String?           @db.VarChar(500)
+  application_date  DateTime          @db.Date
+  status            ApplicationStatus @default(applied)
+  notes             String?           @db.Text
+  username          String            @db.VarChar(100)
 
   user User @relation(fields: [username], references: [username])
 

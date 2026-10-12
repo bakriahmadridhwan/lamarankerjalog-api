@@ -1,13 +1,15 @@
 import { prisma } from "../application/database";
 import { logger } from "../application/logging";
 import { ResponseError } from "../error/response-error";
-import type { Application, User } from "../generated/prisma/client";
+import type { Application, Prisma, User } from "../generated/prisma/client";
 import {
   toApplicationResponse,
   type ApplicationResponse,
   type CreateApplicationRequest,
+  type SearchApplicationRequest,
   type UpdateApplicationRequest,
 } from "../model/application-model";
+import type { Pageable } from "../model/page";
 import { ApplicationValidation } from "../validation/application-validation";
 import { Validation } from "../validation/validation";
 
@@ -106,5 +108,77 @@ export class ApplicationService {
     });
 
     return toApplicationResponse(application);
+  }
+
+  static async search(
+    user: User,
+    request: SearchApplicationRequest,
+  ): Promise<Pageable<ApplicationResponse>> {
+    const searchRequest = Validation.validate(
+      ApplicationValidation.SEARCH,
+      request,
+    );
+    const skip = (searchRequest.page - 1) * searchRequest.size;
+
+    const filters: Prisma.ApplicationWhereInput[] = [];
+    // check if q exist
+    if (searchRequest.q) {
+      filters.push({
+        OR: [
+          {
+            company: {
+              contains: searchRequest.q,
+            },
+          },
+          {
+            job_title: {
+              contains: searchRequest.q,
+            },
+          },
+        ],
+      });
+    }
+    // check if location exist
+    if (searchRequest.location) {
+      filters.push({
+        location: {
+          contains: searchRequest.location,
+        },
+      });
+    }
+    // check if status exist
+    if (searchRequest.status) {
+      filters.push({
+        status: searchRequest.status,
+      });
+    }
+
+    const application = await prisma.application.findMany({
+      where: {
+        username: user.username,
+        AND: filters,
+      },
+      orderBy: [{ application_date: "desc" }, { id: "desc" }],
+      take: searchRequest.size,
+      skip: skip,
+    });
+
+    const total = await prisma.application.count({
+      where: {
+        username: user.username,
+        AND: filters,
+      },
+    });
+
+    return {
+      data: application.map((application) =>
+        toApplicationResponse(application),
+      ),
+      paging: {
+        current_page: searchRequest.page,
+        total_page: Math.ceil(total / searchRequest.size),
+        size: searchRequest.size,
+      },
+    };
   }
 }

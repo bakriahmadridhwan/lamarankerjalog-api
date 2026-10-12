@@ -22,3 +22,4 @@ apiRouter.delete(
   "/api/applications/:applicationId",
   ApplicationController.remove,
 );
+apiRouter.get("/api/applications", ApplicationController.search);

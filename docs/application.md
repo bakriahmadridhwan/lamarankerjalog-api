@@ -220,10 +220,15 @@ Endpoint : GET /api/applications
 
 Query Parameter :
 
-- q : string, cari di company atau job_title, optional
+- q : string, optional, cari di company atau job_title (pencocokan pembagian)
+  <!-- - company : string, optional, pencocokan pembagian -->
+  <!-- - job_title : string, optional, pencocokan pembagian -->
+- location : string, optional, pencocokan pembagian
 - status : string, optional, salah satu dari nilai status
-- page : number, default 1
-- size : number, default 10
+- page : number, default 1, minimal 1
+- size : number, default 10, minimal 1, maksimal 100
+
+semua parameter yang dikirim digabung dengan AND.
 
 Request Header :
 

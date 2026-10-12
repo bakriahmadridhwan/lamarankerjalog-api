@@ -64,4 +64,14 @@ export class ApplicationValidation {
         message: "At least one field must be provided",
       },
     );
+
+  static readonly SEARCH: ZodType = z.object({
+    q: z.string().min(1).optional(),
+    // company: z.string().min(1).optional(),
+    // job_title: z.string().min(1).optional(),
+    location: z.string().min(1).optional(),
+    status: applicationStatus.optional(),
+    page: z.number().int().min(1).positive(),
+    size: z.number().int().min(1).max(100).positive(),
+  });
 }

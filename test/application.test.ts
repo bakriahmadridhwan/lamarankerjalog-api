@@ -272,3 +272,109 @@ describe("DELETE /api/applications/:applicationId", () => {
     expect(response.body.errors).toBeDefined();
   });
 });
+
+describe("GET /api/applications", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+    await ApplicationTest.create();
+  });
+
+  afterEach(async () => {
+    await ApplicationTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it("should be able to search application", async () => {
+    const response = await supertest(web)
+      .get("/api/applications")
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.current_page).toBe(1);
+    expect(response.body.paging.total_page).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it("should be able to search application using q", async () => {
+    const response = await supertest(web)
+      .get("/api/applications")
+      .query({
+        q: "usa",
+      })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.current_page).toBe(1);
+    expect(response.body.paging.total_page).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it("should be able to search application using location", async () => {
+    const response = await supertest(web)
+      .get("/api/applications")
+      .query({
+        location: "lok",
+      })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.current_page).toBe(1);
+    expect(response.body.paging.total_page).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it("should be able to search application using status", async () => {
+    const response = await supertest(web)
+      .get("/api/applications")
+      .query({
+        status: "applied",
+      })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.current_page).toBe(1);
+    expect(response.body.paging.total_page).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it("should be able to search application no result", async () => {
+    const response = await supertest(web)
+      .get("/api/applications")
+      .query({
+        q: "salah",
+      })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(0);
+    expect(response.body.paging.current_page).toBe(1);
+    expect(response.body.paging.total_page).toBe(0);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it("should be able to search application with paging", async () => {
+    const response = await supertest(web)
+      .get("/api/applications")
+      .query({
+        page: 2,
+        size: 1,
+      })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(0);
+    expect(response.body.paging.current_page).toBe(2);
+    expect(response.body.paging.total_page).toBe(1);
+    expect(response.body.paging.size).toBe(1);
+  });
+});

@@ -35,6 +35,16 @@ export type UpdateApplicationRequest = {
   notes?: string | null;
 };
 
+export type SearchApplicationRequest = {
+  q?: string;
+  // company?: string;
+  // job_title?: string;
+  location?: string;
+  status?: ApplicationStatus;
+  page: number;
+  size: number;
+};
+
 export function toApplicationResponse(
   application: Application,
 ): ApplicationResponse {

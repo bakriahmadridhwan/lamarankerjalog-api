@@ -10,18 +10,18 @@ async function main() {
         create: [
           {
             company: "Apple",
-            jobTitle: "Developer",
+            job_title: "Developer",
             location: "Tangerang",
             link: "https://developeracademy.apps.binus.ac.id/",
-            applicationDate: new Date("2026-10-01"),
+            application_date: new Date("2026-10-01"),
             status: "interview",
             notes: "Dihubungi HRD lewat WhatsApp",
           },
           {
             company: "Telkom",
-            jobTitle: "Developer",
+            job_title: "Developer",
             location: "Remote",
-            applicationDate: new Date("2026-10-02"),
+            application_date: new Date("2026-10-02"),
             // status default "applied"; link dan notes opsional, tersimpan null
           },
         ],

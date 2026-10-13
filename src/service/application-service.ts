@@ -158,7 +158,7 @@ export class ApplicationService {
         username: user.username,
         AND: filters,
       },
-      orderBy: [{ application_date: "desc" }, { id: "desc" }],
+      // orderBy: [{ application_date: "desc" }, { id: "desc" }],
       take: searchRequest.size,
       skip: skip,
     });

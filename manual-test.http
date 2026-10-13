@@ -1,0 +1,104 @@
+@baseUrl = http://localhost:3000
+@username = tester
+@password = rahasia
+@name = Test
+
+### Register user
+POST {{baseUrl}}/api/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "{{username}}",
+  "password" : "{{password}}",
+  "name" : "{{name}}"
+}
+
+### Login User
+# @name login
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "{{username}}",
+  "password" : "{{password}}"
+}
+
+### Get User
+GET {{baseUrl}}/api/users/current
+Accept: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+### Logout User
+DELETE {{baseUrl}}/api/users/current
+Accept: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+### Update User
+PATCH {{baseUrl}}/api/users/current
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+{
+  "name" : "Test User"
+}
+
+### Update User Password
+PATCH {{baseUrl}}/api/users/current
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+{
+  "password" : "{{password}}"
+}
+
+### Create Application
+# @name createApp
+POST {{baseUrl}}/api/applications
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+{
+  "company" : "PT KLM",
+  "job_title" : "Frontend Developer",
+  "location" : "Jakarta",
+  "link" : "https://klm.com/",
+  "application_date" : "2026-10-05",
+  "status" : "applied",
+  "notes" : "-"
+}
+
+### Update Application
+PATCH {{baseUrl}}/api/applications/{{createApp.response.body.data.id}}
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+{
+  "status" : "interview",
+  "notes" : "dihubungi HR dari WA"
+}
+
+### Get Application
+GET {{baseUrl}}/api/applications/{{createApp.response.body.data.id}}
+Accept: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+### Remove Application
+DELETE {{baseUrl}}/api/applications/{{createApp.response.body.data.id}}
+Accept: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+### Search Application
+GET {{baseUrl}}/api/applications?size=1&page=2
+Accept: application/json
+X-API-TOKEN: {{login.response.body.data.token}}
+
+### Search with Query Application
+GET {{baseUrl}}/api/applications?status=interview
+Accept: application/json
+X-API-TOKEN: {{login.response.body.data.token}}

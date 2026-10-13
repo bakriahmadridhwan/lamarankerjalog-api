@@ -20,3 +20,6 @@ coverage
 .claude/
 .windsurf/
 skills-lock.json
+
+# PRIVATE README
+README2.md
